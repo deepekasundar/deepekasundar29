@@ -1,0 +1,142 @@
+create database film
+use film
+create table artist(art_id int,art_name varchar(200),art_gender varchar(200),art_wood varchar(200))
+insert into artist(art_id,art_name,art_gender,art_wood)
+values(1,"ajay","male","kollywood")
+insert into artist values(2,"chiru","male","tollywood")
+insert into artist values(3,"shreya","female","bollywood")
+insert into artist values(4,"nazriya","female","mollywood")
+insert into artist values(5,"vikram","male","kollywood")
+select * from artist
+create table producer(prod_id int,prod_name varchar(200),prod_phoneno int,prod_budget varchar(200))
+insert into producer(prod_id,prod_name,prod_phoneno,prod_budget)
+values(10,"varun",883456789,"20lakhs")
+insert into producer values(11,"rehman",987465884,"50lakhs")
+insert into producer values(12,"suriya",985634287,"1crore")
+insert into producer values(13,"sanjeev",784563982,"70lakhs")
+insert into producer values(14,"rohit",759802549,"2crore")
+select * from producer
+create table films(film_id int,film_title varchar(200),film_year int,film_language varchar(200),prod_id int)
+insert into films(film_id,film_title,film_year,film_language,prod_id)
+values(101,"three",2014,"tamil",12)
+insert into films values(102,"ironman",2013,"english",14)
+insert into films values(103,"run",2016,"tamil",12)
+insert into films values(104,"rathore",2018,"telegu",11)
+insert into films values(105,"kalam",2017,"malayalam",13)
+select * from films
+create table review(film_id int,stars int)
+insert into review(film_id,stars)
+values(101,5)
+insert into review values(102,4)
+insert into review values(103,4)
+insert into review values(104,3)
+insert into review values(105,2)
+select * from review
+create table casting(art_id int,film_id int)
+insert into casting(art_id,film_id) values(1,101)
+insert into casting(art_id,film_id) values(2,102);
+insert into casting(art_id,film_id) values(3,103);
+insert into casting(art_id,film_id) values(4,104);
+insert into casting(art_id,film_id) values(5,105);
+select * from casting
+
+/"FIND THE NAME OF ALL THE FILMS WHOSE PRODUCER IS ROHIT"/
+select * from producer
+where prod_name="rohit"
+select film_title from films
+where prod_id in (select prod_id from producer
+where prod_name = "rohit")
+
+/"DISPLAY NAMES OF THE FILMS WITH THE STARS RECIEVED AND SORT THE RESULT ON THE BASIS OF STARS"/
+select f.film_title,r.stars
+from films f,review r
+where f.film_id=r.film_id
+order by r.stars desc
+
+alter table films
+rename column film_year to film_releasedate
+
+alter table films 
+modify column film_releasedate varchar(200)
+
+alter table films
+drop column film_releasedate 
+
+alter table films
+add column film_release_dateyr date
+select * from films
+update films set film_release_dateyr='2013-06-21' where film_id= 102;
+update films set film_release_dateyr='2017-04-01' where film_id= 103;
+update films set film_release_dateyr='2016-09-29' where film_id= 104;
+update films set film_release_dateyr='2015-10-09' where film_id= 105;
+update films set film_release_dateyr='2018-08-02' where film_id= 101;
+select * from films
+order by film_id 
+
+/"movie releasing on particular date"/
+select film_title from films where film_release_dateyr='2016-09-29'
+
+alter table films
+drop column film_release_dateyr
+alter table films
+add column film_date varchar(200)
+select * from films
+alter table films
+add column film_year int
+update films set film_date="21st september",film_year=2013 where film_id=102;
+update films set film_date="9th november",film_year=2015 where film_id=103;
+update films set film_date="1st january",film_year=2017 where film_id=104;
+update films set film_date="25th march",film_year=2018 where film_id=105;
+update films set film_date="7th june",film_year=2016 where film_id=101;
+
+/"which movie is releasing on particular date"/
+select film_title from films where film_date='1st january';
+
+select film_year from films where film_title='rathore';
+ 
+ alter table films
+ add column art_id int
+ select * from films
+ 
+ update films set art_id=1 where film_id=102;
+ update films set art_id=2 where film_id=103;
+ update films set art_id=3 where film_id=104;
+ update films set art_id=4 where film_id=105;
+ update films set art_id=5 where film_id=101;
+ 
+/"display all artist who acted in films between 2016 and 2018"/
+select art_name from artist where art_id in(select art_id from films where film_year between "2016" and "2018")
+
+/"update stars of all films whose producer is sanjeev to 5"/
+update review set stars=5 where film_id in(select film_id from films where prod_id in(select prod_id from producer 
+where prod_name="sanjeev"))
+
+select * from review
+
+create view casting1 as 
+select art_id,film_id
+from casting
+where film_id=104;
+select * from casting1
+
+select films.film_id,artist.art_name,films.film_language
+from films
+inner join artist
+on artist.art_id = films.art_id;
+
+select * from artist
+left join films on films.art_id = artist.art_id
+
+select * from films
+right join artist on artist.art_id = films.art_id
+
+select * from artist
+left join films on films.art_id = artist.art_id
+union all
+select * from artist
+right join films on films.art_id = artist.art_id
+
+
+
+
+
